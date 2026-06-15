@@ -147,6 +147,13 @@ select.filter-select{width:auto}
 /* SECTION PAGES */
 .section-page{display:none}
 .section-page.active{display:block}
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(160deg,#eaf0e4 0%,#f6f2ea 100%);}
+.auth-box{background:var(--white);border-radius:24px;padding:2.5rem;max-width:420px;width:100%;box-shadow:var(--sh2);}
+.auth-box h2{font-size:2rem;color:var(--g1);margin-bottom:.75rem;font-family:'Cormorant Garamond',serif;}
+.auth-box p{color:var(--text2);line-height:1.8;margin-bottom:1.75rem;}
+.auth-box .form-g{margin-bottom:1rem;}
+.auth-box .form-g label{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;font-family:'Montserrat',sans-serif;margin-bottom:.5rem;display:block;}
+.auth-box .form-g input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'Poppins',sans-serif;font-size:14px;color:var(--text);background:var(--cream);}
 
 /* TOAST */
 .toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:0.5rem}
@@ -197,6 +204,20 @@ select.filter-select{width:auto}
 </style>
 </head>
 <body>
+
+<div class="auth-screen" id="loginScreen">
+  <div class="auth-box">
+    <div class="sec-label" style="color:var(--g2);margin-bottom:1rem;">Member Login</div>
+    <h2>Welcome back</h2>
+    <p>Please enter your credentials to continue.</p>
+    <div class="form-g"><label for="loginUser">Username</label><input type="text" id="loginUser" placeholder="admin"></div>
+    <div class="form-g"><label for="loginPass">Password</label><input type="password" id="loginPass" placeholder="••••••"></div>
+    <button class="btn-hero-primary" style="width:100%;margin-top:1rem;" onclick="handleLogin()">Login</button>
+    <p id="loginError" style="display:none;color:#c45c1a;margin-top:1rem;font-size:.95rem;"></p>
+  </div>
+</div>
+
+<div id="mainApp" style="display:none;">  
 
 <div class="layout">
   <!-- SIDEBAR -->
@@ -479,7 +500,7 @@ select.filter-select{width:auto}
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
-
+</div><!-- /mainApp -->
 <script>
 // ═══════ STORAGE HELPERS ═══════
 const PRODUCTS_KEY = 'tlg_products';
@@ -1080,6 +1101,35 @@ function toast(msg, type='') {
 // INIT
 persist();
 renderDashboard();
+
+const AUTH_USER = 'admin';
+const AUTH_PASS = 'password123';
+
+function showMainApp(){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  initHome();
+}
+
+function handleLogin(){
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  if(user === AUTH_USER && pass === AUTH_PASS){
+    sessionStorage.setItem('tlg_authenticated','true');
+    err.style.display = 'none';
+    showMainApp();
+  } else {
+    err.textContent = 'Invalid username or password.';
+    err.style.display = 'block';
+  }
+}
+
+/* ── INIT ─────────────────────────────────────────── */
+if(sessionStorage.getItem('tlg_authenticated') === 'true'){
+  showMainApp();
+}
+
 </script>
 </body>
 </html>
